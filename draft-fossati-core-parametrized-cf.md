@@ -48,9 +48,9 @@ some of the limitations of the existing Accept and Content-Format Options.
 # Introduction
 
 CoAP squashes the combination of a media type, media type parameters and
-content coding into a single Content-Format number.  This number is carried in
-the Content-Format and Accept Options.  (For an example, see {{Section 16.10 of
-RFC8152}}.)
+content coding into a single Content-Format number.  (For an example, see
+{{Section 16.10 of RFC8152}}.)  This number is carried in the Content-Format
+and Accept Options.
 
 This compression strategy is ideal in cases where the set of possible
 combinations is known upfront and has small cardinality.  However, it lacks the
