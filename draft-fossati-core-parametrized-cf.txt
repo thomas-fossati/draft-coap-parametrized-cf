@@ -19,9 +19,9 @@ Abstract
    type parameters.
 
    This document also defines two new CoAP Options, Parmetrized-Content-
-   Format and Parametrized-Multivalued-Accept, that build upon such data
-   item to work around some of the limitations of the existing Accept
-   and Content-Format Options.
+   Format and Parametrized-Multi-Valued-Accept, that build upon said
+   data item to work around some of the limitations of the existing
+   Accept and Content-Format Options.
 
 About This Document
 
@@ -76,8 +76,9 @@ Table of Contents
    2.  Conventions and Definitions
    3.  Parametrized Content-Format
      3.1.  Requirements
+     3.2.  Examples
    4.  Parametrized Content-Format Option
-   5.  Parametrized Multivalued Accept Option
+   5.  Parametrized Multi-Valued Accept Option
    6.  Security Considerations
    7.  IANA Considerations
    8.  References
@@ -90,8 +91,8 @@ Table of Contents
 
    CoAP squashes the combination of a media type, media type parameters
    and content coding into a single Content-Format number.  This number
-   is carried in the Content-Format and Accept Options.  For example,
-   see Section 16.10 of [RFC8152].
+   is carried in the Content-Format and Accept Options.  (For an
+   example, see Section 16.10 of [RFC8152].)
 
    This compression strategy is ideal in cases where the set of possible
    combinations is known upfront and has small cardinality.  However, it
@@ -111,10 +112,11 @@ Table of Contents
 
    *  Parametrized-Content-Format (Section 4)
 
-   *  Parametrized-Multivalued-Accept (Section 5)
+   *  Parametrized-Multi-Valued-Accept (Section 5)
 
-   The latter also works around a well known limitation of the Accept
-   Option allowing more than one Content-Format per request.
+   The latter also works around the limited content negotiation
+   capabilities of the Accept Option by offering more than one Content-
+   Format per request.
 
 2.  Conventions and Definitions
 
@@ -126,18 +128,25 @@ Table of Contents
 
 3.  Parametrized Content-Format
 
-   The Parametrized Content-Format is a CBOR data item defined in
-   Figure 1.
+   The Parametrized Content-Format is a CBOR data item defined by the
+   CDDL in Figure 1.
 
-   media-type-parameters = {
-     + name => value
-   }
+   The first element in the tuple is the Content-Format identifier,
+   followed by one or more name-value pairs representing the additional
+   media type parameters.
 
-   name = textual / codepoint
-   value = any
+   parametrized-content-format = [
+     content-format,
+     + [ parameter-name, parameter-value ]
+   ]
+
+   content-format = 0..65535
+
+   parameter-name = textual / numeric
+   parameter-value = any
 
    textual = text .abnf ("parameter-name" .det RFC6838-parameter-name)
-   codepoint = int
+   numeric = int
 
    RFC6838-parameter-name = '
      parameter-name = restricted-name
@@ -153,49 +162,80 @@ Table of Contents
 
      ALPHA         =  %x41-5A / %x61-7A  ; A-Z / a-z
      DIGIT         =  %x30-39            ; 0-9
-   '}}
+   '
 
-            Figure 1: CDDL for the Media Type Parameters Option
+             Figure 1: CDDL for the Parametrized Content-Format
+
+
+   // TODO describe use of numeric identifiers as alias for parameter
+   // names.
 
 3.1.  Requirements
 
-      The term "additional" has not been used casually in the preceding
-      paragraph: if the Content-Format already encodes one or more
-      parameters, the values in the parameter can only extend the set.
-      Furthermore, the latter is restricted to contain only parameters
-      that are not already encoded in the sibling Content-Format.
+   The list that follows details the semantic requirements that a
+   Parametrized Content-Format data item must satisfy:
 
-   *  MTP must have a sibling C-F (there is no default if C-F is absent)
+   *  The intersection between the media parameters already encoded in
+      the Content-Format identifier and the set of parameters carried in
+      the name-value pairs of the Parametrized Content-Format MUST be
+      empty.
 
-      -  if not, TBD-ACTION
+   *  Each name-value pair MUST be a registered parameter for the media
+      type.
 
-   *  the intersection between parameters in MTP and C-F must be empty
+   If any of the conditions listed above is not met, the entire data
+   item is considered invalid and MUST NOT be processed further.
 
-      -  if not, TBD-ACTION
+3.2.  Examples
+
+   [
+     1,
+     [ "p1", "a-string-value" ],
+     [ "p2", 128 ]
+   ]
+
+                            Figure 2: Example #1
 
 4.  Parametrized Content-Format Option
 
    +========+=+===+===+===+================+========+========+=========+
-   | Number |C| U | N | R | Name           | Format | Length | Default |
+   | Number |C| U | N | R | Name           |Format  | Length | Default |
    +========+=+===+===+===+================+========+========+=========+
-   | TBD    | |   |   |   | Parametrized   | opaque |        | none    |
-   |        | |   |   |   | Content-Format | (see   |        |         |
-   |        | |   |   |   | Option         | TBD)   |        |         |
+   | TBD    | |   |   |   | Parametrized   |See     |        | none    |
+   |        | |   |   |   | Content-Format |Figure 3|        |         |
+   |        | |   |   |   | Option         |        |        |         |
    +--------+-+---+---+---+----------------+--------+--------+---------+
 
-                                  Table 1
+                Table 1: Parametrized Content-Format Option
 
-5.  Parametrized Multivalued Accept Option
+   The Parametrized Content-Format Option carries a CBOR-encoded
+   Parametrized Content-Format data item.
 
-   +========+=+===+===+===+================+========+========+=========+
-   | Number |C| U | N | R | Name           | Format | Length | Default |
-   +========+=+===+===+===+================+========+========+=========+
-   | TBD    | |   |   |   | Parametrized   | opaque |        | none    |
-   |        | |   |   |   | Content-Format | (see   |        |         |
-   |        | |   |   |   | Option         | TBD)   |        |         |
-   +--------+-+---+---+---+----------------+--------+--------+---------+
+   pcf-option-fmt = bytes .cbor parametrized-content-format
 
-                                  Table 2
+            Figure 3: Parametrized Content-Format Option Format
+
+5.  Parametrized Multi-Valued Accept Option
+
+   +========+===+===+===+===+==============+========+========+=========+
+   | Number | C | U | N | R |Name          |Format  | Length | Default |
+   +========+===+===+===+===+==============+========+========+=========+
+   | TBD    |   |   |   |   |Parametrized  |See     |        | none    |
+   |        |   |   |   |   |Multi-Valued  |Figure 4|        |         |
+   |        |   |   |   |   |Accept Option |        |        |         |
+   +--------+---+---+---+---+--------------+--------+--------+---------+
+
+              Table 2: Parametrized Multi-Valued Accept Option
+
+   The Parametrized Multi-Valued Accept Option carries a single CBOR-
+   encoded Parametrized Content-Format data item or two or more
+   Parametrized Content-Format data items as a CBOR array.
+
+   one-or-more<T> = T / [ 2* T ]
+
+   pmva-option-fmt = bytes .cbor one-or-more<parametrized-content-format>
+
+          Figure 4: Parametrized Multi-Valued Accept Option Format
 
 6.  Security Considerations
 
@@ -239,9 +279,11 @@ Authors' Addresses
 
    Thomas Fossati
    arm
+
    Email: thomas.fossati@arm.com
 
 
    Henk Birkholz
    Fraunhofer SIT
+
    Email: henk.birkholz@sit.fraunhofer.de

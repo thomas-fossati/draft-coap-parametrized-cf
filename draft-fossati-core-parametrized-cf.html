@@ -11,29 +11,28 @@
        This document specifies a "parametrized" CoAP Content-Format data item that
 allows supplementing a Content-Format with additional media type parameters. 
        This document also defines two new CoAP Options, Parmetrized-Content-Format and
-Parametrized-Multivalued-Accept, that build upon such data item to work around
+Parametrized-Multi-Valued-Accept, that build upon said data item to work around
 some of the limitations of the existing Accept and Content-Format Options. 
     ' name="description">
-<meta content="xml2rfc 3.12.10" name="generator">
+<meta content="xml2rfc 3.12.0" name="generator">
 <meta content="draft-fossati-core-parametrized-cf-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.12.10
-    Python 3.10.4
+  xml2rfc 3.12.0
+    Python 3.8.9
     appdirs 1.4.4
     ConfigArgParse 1.5.3
-    google-i18n-address 2.5.1
+    google-i18n-address 2.5.0
     html5lib 1.1
     intervaltree 3.1.0
     Jinja2 2.11.3
     kitchen 1.2.6
-    lxml 4.8.0
-    MarkupSafe 2.0.1
+    lxml 4.6.4
     pycountry 20.7.3
     pyflakes 2.4.0
     PyYAML 6.0
-    requests 2.27.1
-    setuptools 59.4.0
-    six 1.16.0
+    requests 2.26.0
+    setuptools 49.2.1
+    six 1.15.0
 -->
 <link href="draft-fossati-core-parametrized-cf.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1072,7 +1071,7 @@ svg :is([stroke="fill"], [fill^="#fff"]) {
 <p id="section-abstract-1">This document specifies a "parametrized" CoAP Content-Format data item that
 allows supplementing a Content-Format with additional media type parameters.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <p id="section-abstract-2">This document also defines two new CoAP Options, Parmetrized-Content-Format and
-Parametrized-Multivalued-Accept, that build upon such data item to work around
+Parametrized-Multi-Valued-Accept, that build upon said data item to work around
 some of the limitations of the existing Accept and Content-Format Options.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
@@ -1150,13 +1149,16 @@ some of the limitations of the existing Accept and Content-Format Options.<a hre
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
                 <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="xref">3.1</a>.  <a href="#name-requirements" class="xref">Requirements</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-examples" class="xref">Examples</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="xref">4</a>.  <a href="#name-parametrized-content-format-" class="xref">Parametrized Content-Format Option</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-parametrized-multivalued-ac" class="xref">Parametrized Multivalued Accept Option</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-parametrized-multi-valued-a" class="xref">Parametrized Multi-Valued Accept Option</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a></p>
@@ -1192,7 +1194,7 @@ some of the limitations of the existing Accept and Content-Format Options.<a hre
       </h2>
 <p id="section-1-1">CoAP squashes the combination of a media type, media type parameters and
 content coding into a single Content-Format number.  This number is carried in
-the Content-Format and Accept Options.  For example, see <span><a href="https://rfc-editor.org/rfc/rfc8152#section-16.10" class="relref">Section 16.10</a> of [<a href="#RFC8152" class="xref">RFC8152</a>]</span>.<a href="#section-1-1" class="pilcrow">¶</a></p>
+the Content-Format and Accept Options.  (For an example, see <span><a href="https://rfc-editor.org/rfc/rfc8152#section-16.10" class="relref">Section 16.10</a> of [<a href="#RFC8152" class="xref">RFC8152</a>]</span>.)<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">This compression strategy is ideal in cases where the set of possible
 combinations is known upfront and has small cardinality.  However, it lacks the
 flexibility to deal smoothly with situations where the number of combinations
@@ -1208,11 +1210,11 @@ parameters.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-6.1">Parametrized-Content-Format (<a href="#sec-pcf-option" class="xref">Section 4</a>)<a href="#section-1-6.1" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-1-6.2">Parametrized-Multivalued-Accept (<a href="#sec-pma-option" class="xref">Section 5</a>)<a href="#section-1-6.2" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-6.2">Parametrized-Multi-Valued-Accept (<a href="#sec-pma-option" class="xref">Section 5</a>)<a href="#section-1-6.2" class="pilcrow">¶</a>
 </li>
       </ul>
-<p id="section-1-7">The latter also works around a well known limitation of the Accept Option
-allowing more than one Content-Format per request.<a href="#section-1-7" class="pilcrow">¶</a></p>
+<p id="section-1-7">The latter also works around the limited content negotiation capabilities of
+the Accept Option by offering more than one Content-Format per request.<a href="#section-1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-definitions">
@@ -1231,20 +1233,26 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
       <h2 id="name-parametrized-content-format">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-parametrized-content-format" class="section-name selfRef">Parametrized Content-Format</a>
       </h2>
-<p id="section-3-1">The Parametrized Content-Format is a CBOR data item defined in <a href="#cddl" class="xref">Figure 1</a>.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<span id="name-cddl-for-the-media-type-par"></span><div id="cddl">
+<p id="section-3-1">The Parametrized Content-Format is a CBOR data item defined by the CDDL in
+<a href="#cddl-pcf" class="xref">Figure 1</a>.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">The first element in the tuple is the Content-Format identifier, followed by
+one or more name-value pairs representing the additional media type parameters.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<span id="name-cddl-for-the-parametrized-c"></span><div id="cddl-pcf">
 <figure id="figure-1">
-        <div id="section-3-2.1">
+        <div id="section-3-3.1">
 <pre class="lang-cddl sourcecode">
-media-type-parameters = {
-  + name =&gt; value
-}
+parametrized-content-format = [
+  content-format,
+  + [ parameter-name, parameter-value ]
+]
 
-name = textual / codepoint
-value = any
+content-format = 0..65535
+
+parameter-name = textual / numeric
+parameter-value = any
 
 textual = text .abnf ("parameter-name" .det RFC6838-parameter-name)
-codepoint = int
+numeric = int
 
 RFC6838-parameter-name = '
   parameter-name = restricted-name
@@ -1260,43 +1268,53 @@ RFC6838-parameter-name = '
 
   ALPHA         =  %x41-5A / %x61-7A  ; A-Z / a-z
   DIGIT         =  %x30-39            ; 0-9
-'}}
+'
 </pre>
 </div>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
-<a href="#name-cddl-for-the-media-type-par" class="selfRef">CDDL for the Media Type Parameters Option</a>
+<a href="#name-cddl-for-the-parametrized-c" class="selfRef">CDDL for the Parametrized Content-Format</a>
         </figcaption></figure>
 </div>
+<p id="section-3-4"><span class="cref" id="TBD1">TODO describe use of numeric identifiers as alias for parameter names.</span><a href="#section-3-4" class="pilcrow">¶</a></p>
 <div id="requirements">
 <section id="section-3.1">
         <h3 id="name-requirements">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-requirements" class="section-name selfRef">Requirements</a>
         </h3>
-<ul class="normal ulEmpty">
-<li class="normal ulEmpty" id="section-3.1-1.1">
-            <p id="section-3.1-1.1.1">The term "additional" has not been used casually in the preceding paragraph: if
-the Content-Format already encodes one or more parameters, the values in the
-parameter can only extend the set.
-Furthermore, the latter is restricted to contain only parameters that are not
-already encoded in the sibling Content-Format.<a href="#section-3.1-1.1.1" class="pilcrow">¶</a></p>
+<p id="section-3.1-1">The list that follows details the semantic requirements that a Parametrized
+Content-Format data item must satisfy:<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.1-2.1">The intersection between the media parameters already encoded in the
+Content-Format identifier and the set of parameters carried in the name-value
+pairs of the Parametrized Content-Format <span class="bcp14">MUST</span> be empty.<a href="#section-3.1-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.1-2.2">Each name-value pair <span class="bcp14">MUST</span> be a registered parameter for the media type.<a href="#section-3.1-2.2" class="pilcrow">¶</a>
 </li>
         </ul>
-<ul class="normal">
-<li class="normal" id="section-3.1-2.1">
-            <p id="section-3.1-2.1.1">MTP must have a sibling C-F (there is no default if C-F is absent)<a href="#section-3.1-2.1.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.1-2.1.2.1">if not, TBD-ACTION<a href="#section-3.1-2.1.2.1" class="pilcrow">¶</a>
-</li>
-            </ul>
-</li>
-          <li class="normal" id="section-3.1-2.2">
-            <p id="section-3.1-2.2.1">the intersection between parameters in MTP and C-F must be empty<a href="#section-3.1-2.2.1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3.1-2.2.2.1">if not, TBD-ACTION<a href="#section-3.1-2.2.2.1" class="pilcrow">¶</a>
-</li>
-            </ul>
-</li>
-        </ul>
+<p id="section-3.1-3">If any of the conditions listed above is not met, the entire data item is
+considered invalid and <span class="bcp14">MUST NOT</span> be processed further.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="examples">
+<section id="section-3.2">
+        <h3 id="name-examples">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-examples" class="section-name selfRef">Examples</a>
+        </h3>
+<span id="name-example-1"></span><div id="ex-pcf-1">
+<figure id="figure-2">
+          <div id="section-3.2-1.1">
+<pre class="lang-cbor-diag sourcecode">
+[
+  1,
+  [ "p1", "a-string-value" ],
+  [ "p2", 128 ]
+]
+</pre>
+</div>
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<a href="#name-example-1" class="selfRef">Example #1</a>
+          </figcaption></figure>
+</div>
 </section>
 </div>
 </section>
@@ -1306,8 +1324,12 @@ already encoded in the sibling Content-Format.<a href="#section-3.1-1.1.1" class
       <h2 id="name-parametrized-content-format-">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-parametrized-content-format-" class="section-name selfRef">Parametrized Content-Format Option</a>
       </h2>
+<span id="name-parametrized-content-format-o"></span><div id="tbl-pcf-opt">
 <table class="center" id="table-1">
-        <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+        <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-parametrized-content-format-o" class="selfRef">Parametrized Content-Format Option</a>
+        </caption>
 <thead>
           <tr>
             <th class="text-left" rowspan="1" colspan="1">Number</th>
@@ -1329,21 +1351,40 @@ already encoded in the sibling Content-Format.<a href="#section-3.1-1.1.1" class
             <td class="text-left" rowspan="1" colspan="1"> </td>
             <td class="text-left" rowspan="1" colspan="1"> </td>
             <td class="text-left" rowspan="1" colspan="1">Parametrized Content-Format Option</td>
-            <td class="text-left" rowspan="1" colspan="1">opaque (see TBD)</td>
+            <td class="text-left" rowspan="1" colspan="1">See <a href="#cddl-pcf-opt-fmt" class="xref">Figure 3</a>
+</td>
             <td class="text-left" rowspan="1" colspan="1"> </td>
             <td class="text-left" rowspan="1" colspan="1">none</td>
           </tr>
         </tbody>
       </table>
+</div>
+<p id="section-4-2">The Parametrized Content-Format Option carries a CBOR-encoded Parametrized
+Content-Format data item.<a href="#section-4-2" class="pilcrow">¶</a></p>
+<span id="name-parametrized-content-format-op"></span><div id="cddl-pcf-opt-fmt">
+<figure id="figure-3">
+        <div id="section-4-3.1">
+<pre class="lang-cddl sourcecode">
+pcf-option-fmt = bytes .cbor parametrized-content-format
+</pre>
+</div>
+<figcaption><a href="#figure-3" class="selfRef">Figure 3</a>:
+<a href="#name-parametrized-content-format-op" class="selfRef">Parametrized Content-Format Option Format</a>
+        </figcaption></figure>
+</div>
 </section>
 </div>
 <div id="sec-pma-option">
 <section id="section-5">
-      <h2 id="name-parametrized-multivalued-ac">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-parametrized-multivalued-ac" class="section-name selfRef">Parametrized Multivalued Accept Option</a>
+      <h2 id="name-parametrized-multi-valued-a">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-parametrized-multi-valued-a" class="section-name selfRef">Parametrized Multi-Valued Accept Option</a>
       </h2>
+<span id="name-parametrized-multi-valued-ac"></span><div id="tbl-pmva-opt">
 <table class="center" id="table-2">
-        <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
+        <caption>
+<a href="#table-2" class="selfRef">Table 2</a>:
+<a href="#name-parametrized-multi-valued-ac" class="selfRef">Parametrized Multi-Valued Accept Option</a>
+        </caption>
 <thead>
           <tr>
             <th class="text-left" rowspan="1" colspan="1">Number</th>
@@ -1364,13 +1405,31 @@ already encoded in the sibling Content-Format.<a href="#section-3.1-1.1.1" class
             <td class="text-left" rowspan="1" colspan="1"> </td>
             <td class="text-left" rowspan="1" colspan="1"> </td>
             <td class="text-left" rowspan="1" colspan="1"> </td>
-            <td class="text-left" rowspan="1" colspan="1">Parametrized Content-Format Option</td>
-            <td class="text-left" rowspan="1" colspan="1">opaque (see TBD)</td>
+            <td class="text-left" rowspan="1" colspan="1">Parametrized Multi-Valued Accept Option</td>
+            <td class="text-left" rowspan="1" colspan="1">See <a href="#cddl-pmva-opt-fmt" class="xref">Figure 4</a>
+</td>
             <td class="text-left" rowspan="1" colspan="1"> </td>
             <td class="text-left" rowspan="1" colspan="1">none</td>
           </tr>
         </tbody>
       </table>
+</div>
+<p id="section-5-2">The Parametrized Multi-Valued Accept Option carries a single CBOR-encoded
+Parametrized Content-Format data item or two or more Parametrized
+Content-Format data items as a CBOR array.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<span id="name-parametrized-multi-valued-acc"></span><div id="cddl-pmva-opt-fmt">
+<figure id="figure-4">
+        <div id="section-5-3.1">
+<pre class="lang-cddl sourcecode">
+one-or-more&lt;T&gt; = T / [ 2* T ]
+
+pmva-option-fmt = bytes .cbor one-or-more&lt;parametrized-content-format&gt;
+</pre>
+</div>
+<figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
+<a href="#name-parametrized-multi-valued-acc" class="selfRef">Parametrized Multi-Valued Accept Option Format</a>
+        </figcaption></figure>
+</div>
 </section>
 </div>
 <div id="security-considerations">
