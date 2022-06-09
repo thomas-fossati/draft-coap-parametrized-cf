@@ -90,9 +90,9 @@ Table of Contents
 1.  Introduction
 
    CoAP squashes the combination of a media type, media type parameters
-   and content coding into a single Content-Format number.  This number
-   is carried in the Content-Format and Accept Options.  (For an
-   example, see Section 16.10 of [RFC8152].)
+   and content coding into a single Content-Format number.  (For an
+   example, see Section 16.10 of [RFC8152].)  This number is carried in
+   the Content-Format and Accept Options.
 
    This compression strategy is ideal in cases where the set of possible
    combinations is known upfront and has small cardinality.  However, it
