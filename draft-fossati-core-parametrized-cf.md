@@ -78,12 +78,12 @@ allowing more than one Content-Format per request.
 
 {::boilerplate bcp14-tagged}
 
-# Parametrized Content-Format
+# Parametrized Content-Format {#sec-pcf}
 
 The Parametrized Content-Format is a CBOR data item defined in {{cddl}}.
 
 ~~~cddl
-{::include mtp.cddl}}
+{::include pcf.cddl}}
 ~~~
 {: #cddl title="CDDL for the Media Type Parameters Option"}
 
@@ -104,14 +104,14 @@ The Parametrized Content-Format is a CBOR data item defined in {{cddl}}.
 
 | Number | C | U | N | R | Name | Format | Length | Default |
 | ------ | - | - | - | - | ---- | ------ | ------ | ------- |
-| TBD    |   |   |   |   | Parametrized Content-Format Option | opaque (see {{option-encoding}} | | none |
+| TBD    |   |   |   |   | Parametrized Content-Format Option | opaque (see TBD) | | none |
 
 
 # Parametrized Multivalued Accept Option {#sec-pma-option}
 
 | Number | C | U | N | R | Name | Format | Length | Default |
 | ------ | - | - | - | - | ---- | ------ | ------ | ------- |
-| TBD    |   |   |   |   | Parametrized Content-Format Option | opaque (see {{option-encoding}} | | none |
+| TBD    |   |   |   |   | Parametrized Content-Format Option | opaque (see TBD) | | none |
 
 
 # Security Considerations
