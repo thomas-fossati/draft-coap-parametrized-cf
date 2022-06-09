@@ -1,12 +1,17 @@
-media-type-parameters = {
-  + name => value
-}
+start = pmva-option-fmt
 
-name = textual / codepoint
-value = any
+parametrized-content-format = [
+  content-format,
+  + [ parameter-name, parameter-value ]
+]
+
+content-format = 0..65535
+
+parameter-name = textual / numeric
+parameter-value = any
 
 textual = text .abnf ("parameter-name" .det RFC6838-parameter-name)
-codepoint = int
+numeric = int
 
 RFC6838-parameter-name = '
   parameter-name = restricted-name
@@ -22,4 +27,9 @@ RFC6838-parameter-name = '
 
   ALPHA         =  %x41-5A / %x61-7A  ; A-Z / a-z
   DIGIT         =  %x30-39            ; 0-9
-'}
+'
+
+one-or-more<T> = T / [ 2* T ]
+
+pcf-option-fmt = bytes .cbor parametrized-content-format
+pmva-option-fmt = bytes .cbor one-or-more<parametrized-content-format>
