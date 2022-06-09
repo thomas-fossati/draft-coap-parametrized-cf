@@ -1,0 +1,247 @@
+
+
+
+
+Constrained RESTful Environments                              T. Fossati
+Internet-Draft                                                       arm
+Intended status: Standards Track                             H. Birkholz
+Expires: 11 December 2022                                 Fraunhofer SIT
+                                                             9 June 2022
+
+
+                  Parametrized Content-Format for CoAP
+               draft-fossati-core-parametrized-cf-latest
+
+Abstract
+
+   This document specifies a "parametrized" CoAP Content-Format data
+   item that allows supplementing a Content-Format with additional media
+   type parameters.
+
+   This document also defines two new CoAP Options, Parmetrized-Content-
+   Format and Parametrized-Multivalued-Accept, that build upon such data
+   item to work around some of the limitations of the existing Accept
+   and Content-Format Options.
+
+About This Document
+
+   This note is to be removed before publishing as an RFC.
+
+   The latest revision of this draft can be found at https://thomas-
+   fossati.github.io/draft-core-mtp-option/draft-fossati-core-mtp-
+   option.html.  Status information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-fossati-core-parametrized-cf/.
+
+   Discussion of this document takes place on the Constrained RESTful
+   Environments Working Group mailing list (mailto:core@ietf.org), which
+   is archived at https://mailarchive.ietf.org/arch/browse/core/.
+
+   Source for this draft and an issue tracker can be found at
+   https://github.com/thomas-fossati/draft-core-mtp-option.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 11 December 2022.
+
+Copyright Notice
+
+   Copyright (c) 2022 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction
+   2.  Conventions and Definitions
+   3.  Parametrized Content-Format
+     3.1.  Requirements
+   4.  Parametrized Content-Format Option
+   5.  Parametrized Multivalued Accept Option
+   6.  Security Considerations
+   7.  IANA Considerations
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
+   Acknowledgments
+   Authors' Addresses
+
+1.  Introduction
+
+   CoAP squashes the combination of a media type, media type parameters
+   and content coding into a single Content-Format number.  This number
+   is carried in the Content-Format and Accept Options.  For example,
+   see Section 16.10 of [RFC8152].
+
+   This compression strategy is ideal in cases where the set of possible
+   combinations is known upfront and has small cardinality.  However, it
+   lacks the flexibility to deal smoothly with situations where the
+   number of combinations can grow unbounded.
+
+   An example is [I-D.lundblade-rats-eat-media-type], in which the
+   "profile" media type parameter can carry a number of different values
+   that are constantly minted through a loosely regulated process.
+
+   To avoid the combinatorial explosion that derives from such premises,
+   this document defines the "parametrized" Content-Format data item
+   (Section 3) as a mechanism to enrich a given Content-Format with
+   additional media type parameters.
+
+   Two new CoAP Options that build upon such data item are also defined:
+
+   *  Parametrized-Content-Format (Section 4)
+
+   *  Parametrized-Multivalued-Accept (Section 5)
+
+   The latter also works around a well known limitation of the Accept
+   Option allowing more than one Content-Format per request.
+
+2.  Conventions and Definitions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+3.  Parametrized Content-Format
+
+   The Parametrized Content-Format is a CBOR data item defined in
+   Figure 1.
+
+   media-type-parameters = {
+     + name => value
+   }
+
+   name = textual / codepoint
+   value = any
+
+   textual = text .abnf ("parameter-name" .det RFC6838-parameter-name)
+   codepoint = int
+
+   RFC6838-parameter-name = '
+     parameter-name = restricted-name
+
+     restricted-name = restricted-name-first *126restricted-name-chars
+     restricted-name-first  = ALPHA / DIGIT
+     restricted-name-chars  = ALPHA / DIGIT / "!" / "#" /
+                              "$" / "&" / "-" / "^" / "_"
+     restricted-name-chars =/ "." ; Characters before first dot always
+                                  ; specify a facet name
+     restricted-name-chars =/ "+" ; Characters after last plus always
+                                  ; specify a structured syntax suffix
+
+     ALPHA         =  %x41-5A / %x61-7A  ; A-Z / a-z
+     DIGIT         =  %x30-39            ; 0-9
+   '}}
+
+            Figure 1: CDDL for the Media Type Parameters Option
+
+3.1.  Requirements
+
+      The term "additional" has not been used casually in the preceding
+      paragraph: if the Content-Format already encodes one or more
+      parameters, the values in the parameter can only extend the set.
+      Furthermore, the latter is restricted to contain only parameters
+      that are not already encoded in the sibling Content-Format.
+
+   *  MTP must have a sibling C-F (there is no default if C-F is absent)
+
+      -  if not, TBD-ACTION
+
+   *  the intersection between parameters in MTP and C-F must be empty
+
+      -  if not, TBD-ACTION
+
+4.  Parametrized Content-Format Option
+
+   +========+=+===+===+===+================+========+========+=========+
+   | Number |C| U | N | R | Name           | Format | Length | Default |
+   +========+=+===+===+===+================+========+========+=========+
+   | TBD    | |   |   |   | Parametrized   | opaque |        | none    |
+   |        | |   |   |   | Content-Format | (see   |        |         |
+   |        | |   |   |   | Option         | TBD)   |        |         |
+   +--------+-+---+---+---+----------------+--------+--------+---------+
+
+                                  Table 1
+
+5.  Parametrized Multivalued Accept Option
+
+   +========+=+===+===+===+================+========+========+=========+
+   | Number |C| U | N | R | Name           | Format | Length | Default |
+   +========+=+===+===+===+================+========+========+=========+
+   | TBD    | |   |   |   | Parametrized   | opaque |        | none    |
+   |        | |   |   |   | Content-Format | (see   |        |         |
+   |        | |   |   |   | Option         | TBD)   |        |         |
+   +--------+-+---+---+---+----------------+--------+--------+---------+
+
+                                  Table 2
+
+6.  Security Considerations
+
+   TODO Security
+
+7.  IANA Considerations
+
+   TODO IANA
+
+8.  References
+
+8.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+8.2.  Informative References
+
+   [I-D.lundblade-rats-eat-media-type]
+              Lundblade, L., Birkholz, H., and T. Fossati, "EAT Media
+              Types", Work in Progress, Internet-Draft, draft-lundblade-
+              rats-eat-media-type-00, 26 May 2022,
+              <https://datatracker.ietf.org/doc/html/draft-lundblade-
+              rats-eat-media-type-00>.
+
+   [RFC8152]  Schaad, J., "CBOR Object Signing and Encryption (COSE)",
+              RFC 8152, DOI 10.17487/RFC8152, July 2017,
+              <https://www.rfc-editor.org/rfc/rfc8152>.
+
+Acknowledgments
+
+   TODO acknowledge.
+
+Authors' Addresses
+
+   Thomas Fossati
+   arm
+   Email: thomas.fossati@arm.com
+
+
+   Henk Birkholz
+   Fraunhofer SIT
+   Email: henk.birkholz@sit.fraunhofer.de
