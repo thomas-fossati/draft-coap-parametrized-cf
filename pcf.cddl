@@ -2,7 +2,7 @@ start = pmva-option-fmt
 
 parametrized-content-format = [
   content-format,
-  + [ parameter-name, parameter-value ]
+  * [ parameter-name, parameter-value ]
 ]
 
 content-format = 0..65535

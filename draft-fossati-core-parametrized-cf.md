@@ -30,6 +30,9 @@ author:
     email: henk.birkholz@sit.fraunhofer.de
 
 normative:
+  RFC7252:
+  RFC8610:
+  STD94:
 
 informative:
   RFC8152:
@@ -40,8 +43,9 @@ This document specifies a "parametrized" CoAP Content-Format data item that
 allows supplementing a Content-Format with additional media type parameters.
 
 This document also defines two new CoAP Options, Parmetrized-Content-Format and
-Parametrized-Multi-Valued-Accept, that build upon said data item to work around
-some of the limitations of the existing Accept and Content-Format Options.
+Parametrized-Multi-Valued-Accept, that build upon the "parametrized"
+Content-Format data item to work around some of the limitations of the existing
+Accept and Content-Format Options.
 
 --- middle
 
@@ -72,7 +76,8 @@ Two new CoAP Options that build upon such data item are also defined:
 * Parametrized-Multi-Valued-Accept ({{sec-pma-option}})
 
 The latter also works around the limited content negotiation capabilities of
-the Accept Option by offering more than one Content-Format per request.
+the CoAP Accept Option by allowing to accept more than one Content-Format per
+request.
 
 # Conventions and Definitions
 
@@ -80,16 +85,20 @@ the Accept Option by offering more than one Content-Format per request.
 
 # Parametrized Content-Format {#sec-pcf}
 
-The Parametrized Content-Format is a CBOR data item defined by the CDDL in
-{{cddl-pcf}}.
+The Parametrized Content-Format is a CBOR {{STD94}} data item defined by the
+CDDL {{RFC8610}} in {{cddl-pcf}}.
 
 The first element in the tuple is the Content-Format identifier, followed by
-one or more name-value pairs representing the additional media type parameters.
+zero or more name-value pairs representing the additional media type parameters.
+
+The name-value pairs are optional to support the case where the Parametrized
+Content-Format is used in Parametrized Multi-Valued Accept Option
+({{sec-pma-option}}).
 
 ~~~cddl
 parametrized-content-format = [
   content-format,
-  + [ parameter-name, parameter-value ]
+  * [ parameter-name, parameter-value ]
 ]
 
 content-format = 0..65535
@@ -120,7 +129,7 @@ RFC6838-parameter-name = '
 
 [^TBD1]
 
-[^TBD1]: TODO describe use of numeric identifiers as alias for parameter names.
+[^TBD1]: TODO describe use of numeric identifiers as alias for parameter names (requires a new registry).
 
 ## Requirements
 
@@ -151,7 +160,7 @@ considered invalid and MUST NOT be processed further.
 
 | Number | C | U | N | R | Name | Format | Length | Default |
 | ------ | - | - | - | - | ---- | ------ | ------ | ------- |
-| TBD    |   |   |   |   | Parametrized Content-Format Option | See {{cddl-pcf-opt-fmt}} | | none |
+| TBD24  |   |   |   |   | Parametrized Content-Format Option | See {{cddl-pcf-opt-fmt}} | | none |
 {: #tbl-pcf-opt title="Parametrized Content-Format Option"}
 
 The Parametrized Content-Format Option carries a CBOR-encoded Parametrized
@@ -162,11 +171,14 @@ pcf-option-fmt = bytes .cbor parametrized-content-format
 ~~~
 {: #cddl-pcf-opt-fmt title="Parametrized Content-Format Option Format"}
 
+The semantic is identical to the Content-Format Option described in {{Section
+5.10.3 of RFC7252}}.
+
 # Parametrized Multi-Valued Accept Option {#sec-pma-option}
 
 | Number | C | U | N | R | Name | Format | Length | Default |
 | ------ | - | - | - | - | ---- | ------ | ------ | ------- |
-| TBD    |   |   |   |   | Parametrized Multi-Valued Accept Option | See {{cddl-pmva-opt-fmt}} | | none |
+| TBD13  | x |   |   |   | Parametrized Multi-Valued Accept Option | See {{cddl-pmva-opt-fmt}} | | none |
 {: #tbl-pmva-opt title="Parametrized Multi-Valued Accept Option"}
 
 The Parametrized Multi-Valued Accept Option carries a single CBOR-encoded
@@ -179,6 +191,14 @@ one-or-more<T> = T / [ 2* T ]
 pmva-option-fmt = bytes .cbor one-or-more<parametrized-content-format>
 ~~~
 {: #cddl-pmva-opt-fmt title="Parametrized Multi-Valued Accept Option Format"}
+
+The semantic is identical to the Accept Option described in {{Section 5.10.4 of
+RFC7252}}, except for the ability to list more than one acceptable
+(parametrized) Content-Format, which is key to enable finer-grained content
+negotiation.
+
+The Content-Formats are listed in order of preference.  If more than one match
+is found, the entry with the lowest index in the array MUST be selected.
 
 # Security Considerations
 
