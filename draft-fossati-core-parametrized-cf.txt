@@ -193,7 +193,7 @@ Table of Contents
 3.2.  Examples
 
    [
-     1,
+     65000,
      [ "p1", "a-string-value" ],
      [ "p2", 128 ]
    ]
