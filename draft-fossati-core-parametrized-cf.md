@@ -149,7 +149,7 @@ considered invalid and MUST NOT be processed further.
 
 ~~~cbor-diag
 [
-  1,
+  65000,
   [ "p1", "a-string-value" ],
   [ "p2", 128 ]
 ]
