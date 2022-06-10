@@ -16,8 +16,8 @@ venue:
   type: "Working Group"
   mail: "core@ietf.org"
   arch: "https://mailarchive.ietf.org/arch/browse/core/"
-  github: "thomas-fossati/draft-core-mtp-option"
-  latest: "https://thomas-fossati.github.io/draft-core-mtp-option/draft-fossati-core-mtp-option.html"
+  github: "thomas-fossati/draft-coap-parametrized-cf"
+  latest: "https://thomas-fossati.github.io/draft-coap-parametrized-cf/draft-fossati-core-parametrized-cf.html"
 
 author:
  -
