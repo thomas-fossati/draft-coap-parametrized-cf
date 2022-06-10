@@ -312,11 +312,9 @@ Authors' Addresses
 
    Thomas Fossati
    arm
-
    Email: thomas.fossati@arm.com
 
 
    Henk Birkholz
    Fraunhofer SIT
-
    Email: henk.birkholz@sit.fraunhofer.de
