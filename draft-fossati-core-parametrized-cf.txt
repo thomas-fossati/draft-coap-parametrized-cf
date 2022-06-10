@@ -5,8 +5,8 @@
 Constrained RESTful Environments                              T. Fossati
 Internet-Draft                                                       arm
 Intended status: Standards Track                             H. Birkholz
-Expires: 11 December 2022                                 Fraunhofer SIT
-                                                             9 June 2022
+Expires: 12 December 2022                                 Fraunhofer SIT
+                                                            10 June 2022
 
 
                   Parametrized Content-Format for CoAP
@@ -19,9 +19,9 @@ Abstract
    type parameters.
 
    This document also defines two new CoAP Options, Parmetrized-Content-
-   Format and Parametrized-Multi-Valued-Accept, that build upon said
-   data item to work around some of the limitations of the existing
-   Accept and Content-Format Options.
+   Format and Parametrized-Multi-Valued-Accept, that build upon the
+   "parametrized" Content-Format data item to work around some of the
+   limitations of the existing Accept and Content-Format Options.
 
 About This Document
 
@@ -54,7 +54,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 December 2022.
+   This Internet-Draft will expire on 12 December 2022.
 
 Copyright Notice
 
@@ -115,8 +115,8 @@ Table of Contents
    *  Parametrized-Multi-Valued-Accept (Section 5)
 
    The latter also works around the limited content negotiation
-   capabilities of the Accept Option by offering more than one Content-
-   Format per request.
+   capabilities of the CoAP Accept Option by allowing to accept more
+   than one Content-Format per request.
 
 2.  Conventions and Definitions
 
@@ -128,16 +128,20 @@ Table of Contents
 
 3.  Parametrized Content-Format
 
-   The Parametrized Content-Format is a CBOR data item defined by the
-   CDDL in Figure 1.
+   The Parametrized Content-Format is a CBOR [STD94] data item defined
+   by the CDDL [RFC8610] in Figure 1.
 
    The first element in the tuple is the Content-Format identifier,
-   followed by one or more name-value pairs representing the additional
+   followed by zero or more name-value pairs representing the additional
    media type parameters.
+
+   The name-value pairs are optional to support the case where the
+   Parametrized Content-Format is used in Parametrized Multi-Valued
+   Accept Option (Section 5).
 
    parametrized-content-format = [
      content-format,
-     + [ parameter-name, parameter-value ]
+     * [ parameter-name, parameter-value ]
    ]
 
    content-format = 0..65535
@@ -168,7 +172,7 @@ Table of Contents
 
 
    // TODO describe use of numeric identifiers as alias for parameter
-   // names.
+   // names (requires a new registry).
 
 3.1.  Requirements
 
@@ -201,7 +205,7 @@ Table of Contents
    +========+=+===+===+===+================+========+========+=========+
    | Number |C| U | N | R | Name           |Format  | Length | Default |
    +========+=+===+===+===+================+========+========+=========+
-   | TBD    | |   |   |   | Parametrized   |See     |        | none    |
+   | TBD24  | |   |   |   | Parametrized   |See     |        | none    |
    |        | |   |   |   | Content-Format |Figure 3|        |         |
    |        | |   |   |   | Option         |        |        |         |
    +--------+-+---+---+---+----------------+--------+--------+---------+
@@ -215,12 +219,15 @@ Table of Contents
 
             Figure 3: Parametrized Content-Format Option Format
 
+   The semantic is identical to the Content-Format Option described in
+   Section 5.10.3 of [RFC7252].
+
 5.  Parametrized Multi-Valued Accept Option
 
    +========+===+===+===+===+==============+========+========+=========+
    | Number | C | U | N | R |Name          |Format  | Length | Default |
    +========+===+===+===+===+==============+========+========+=========+
-   | TBD    |   |   |   |   |Parametrized  |See     |        | none    |
+   | TBD13  | x |   |   |   |Parametrized  |See     |        | none    |
    |        |   |   |   |   |Multi-Valued  |Figure 4|        |         |
    |        |   |   |   |   |Accept Option |        |        |         |
    +--------+---+---+---+---+--------------+--------+--------+---------+
@@ -236,6 +243,15 @@ Table of Contents
    pmva-option-fmt = bytes .cbor one-or-more<parametrized-content-format>
 
           Figure 4: Parametrized Multi-Valued Accept Option Format
+
+   The semantic is identical to the Accept Option described in
+   Section 5.10.4 of [RFC7252], except for the ability to list more than
+   one acceptable (parametrized) Content-Format, which is key to enable
+   finer-grained content negotiation.
+
+   The Content-Formats are listed in order of preference.  If more than
+   one match is found, the entry with the lowest index in the array MUST
+   be selected.
 
 6.  Security Considerations
 
@@ -254,9 +270,25 @@ Table of Contents
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
+   [RFC7252]  Shelby, Z., Hartke, K., and C. Bormann, "The Constrained
+              Application Protocol (CoAP)", RFC 7252,
+              DOI 10.17487/RFC7252, June 2014,
+              <https://www.rfc-editor.org/rfc/rfc7252>.
+
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+   [RFC8610]  Birkholz, H., Vigano, C., and C. Bormann, "Concise Data
+              Definition Language (CDDL): A Notational Convention to
+              Express Concise Binary Object Representation (CBOR) and
+              JSON Data Structures", RFC 8610, DOI 10.17487/RFC8610,
+              June 2019, <https://www.rfc-editor.org/rfc/rfc8610>.
+
+   [STD94]    Bormann, C. and P. Hoffman, "Concise Binary Object
+              Representation (CBOR)", STD 94, RFC 8949, December 2020.
+
+              <https://www.rfc-editor.org/info/std94>
 
 8.2.  Informative References
 
