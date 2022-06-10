@@ -28,16 +28,17 @@ About This Document
    This note is to be removed before publishing as an RFC.
 
    The latest revision of this draft can be found at https://thomas-
-   fossati.github.io/draft-core-mtp-option/draft-fossati-core-mtp-
-   option.html.  Status information for this document may be found at
-   https://datatracker.ietf.org/doc/draft-fossati-core-parametrized-cf/.
+   fossati.github.io/draft-coap-parametrized-cf/draft-fossati-core-
+   parametrized-cf.html.  Status information for this document may be
+   found at https://datatracker.ietf.org/doc/draft-fossati-core-
+   parametrized-cf/.
 
    Discussion of this document takes place on the Constrained RESTful
    Environments Working Group mailing list (mailto:core@ietf.org), which
    is archived at https://mailarchive.ietf.org/arch/browse/core/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/thomas-fossati/draft-core-mtp-option.
+   https://github.com/thomas-fossati/draft-coap-parametrized-cf.
 
 Status of This Memo
 
@@ -311,9 +312,11 @@ Authors' Addresses
 
    Thomas Fossati
    arm
+
    Email: thomas.fossati@arm.com
 
 
    Henk Birkholz
    Fraunhofer SIT
+
    Email: henk.birkholz@sit.fraunhofer.de
