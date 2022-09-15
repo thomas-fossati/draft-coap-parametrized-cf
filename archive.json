@@ -1,0 +1,199 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2022-09-15T00:36:40.546721+00:00",
+  "repo": "thomas-fossati/draft-coap-parametrized-cf",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOHeY_585NPvIU",
+      "title": "If there is no reason to use PCF, emitter SHOULD fall back to normal C-F",
+      "url": "https://github.com/thomas-fossati/draft-coap-parametrized-cf/issues/1",
+      "state": "OPEN",
+      "author": "thomas-fossati",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "At the interim Marco observed that there needs to be a SHOULD for the emitter to not use PCF if there are no parameters supplied.  In such case, pAccept and pContent-Format SHOULD fall back to their non-parametrised counterparts.",
+      "createdAt": "2022-07-06T15:00:10Z",
+      "updatedAt": "2022-07-06T15:11:16Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "thomas-fossati",
+          "authorAssociation": "OWNER",
+          "body": "From the notes:\r\n\r\n_\"MT: On Section 4 \u201cParametrized Content-Format Option\u201d. I suggest to add a note. If it is about signaling only the original content-format with no additional parameters, then just use the original Content-Format option with value an integer, rather than this new option with value an array including only an integer. The latter would be semantically correct, but less efficient and the recipient endpoint might not support the new option in the first place. This can even be formulated as a normative SHOULD.\"_",
+          "createdAt": "2022-07-06T15:11:16Z",
+          "updatedAt": "2022-07-06T15:11:16Z"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "I_kwDOHeY_585NP2Jj",
+      "title": "avoid arrays if there's nothing to wrap",
+      "url": "https://github.com/thomas-fossati/draft-coap-parametrized-cf/issues/2",
+      "state": "OPEN",
+      "author": "thomas-fossati",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Note from Marco at the interim:\r\n\r\nOn Section 5 \u201cParametrized Multi-Valued Accept Option\u201d. Suppose you want to indicate a set of acceptable content-formats, but with no additional parameters compared to their original definitions. Building on:\r\n```\r\none-or-more<T> = T / [ 2* T ]\r\n```\r\nyou would have\r\n```\r\n[ [CT1], [CT2], ..., [CTN] ]\r\n```\r\nwhile it would be better to have\r\n```\r\n[ CT1, CT2, ..., CTN ]\r\n```\r\nThis becomes possible if the CBOR data item in Section 3 is extended to be\r\n```\r\nparametrized-content-format =\r\n   content-format /\r\n   [\r\n     content-format,\r\n     * [ parameter-name, parameter-value ]\r\n   ]\r\n```\r\nThen a note is good here too. If you want to signal the support of only one Content-Format with no additional parameters, just use the original Accept option. This can even be formulated as a normative SHOULD.\r\n",
+      "createdAt": "2022-07-06T15:23:02Z",
+      "updatedAt": "2022-07-06T15:23:02Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 3,
+      "id": "I_kwDOHeY_585NP3At",
+      "title": "further use cases",
+      "url": "https://github.com/thomas-fossati/draft-coap-parametrized-cf/issues/3",
+      "state": "OPEN",
+      "author": "thomas-fossati",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Note from Chris at the interim:\r\n\r\n* gemini as defined in https://gemini.circumlunar.space/docs/specification.html uses \u201ctext/gemini; lang=fr\u201d a lot\r\n* CoRAL profiles will be a topic of \u201cAccept\u201d headers.\r\n\r\n---\r\n\r\nAlso add a link to CoRIM as well.",
+      "createdAt": "2022-07-06T15:25:58Z",
+      "updatedAt": "2022-07-06T15:25:58Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 4,
+      "id": "I_kwDOHeY_585NP3ck",
+      "title": "guidelines around `any` for parameter values",
+      "url": "https://github.com/thomas-fossati/draft-coap-parametrized-cf/issues/4",
+      "state": "OPEN",
+      "author": "thomas-fossati",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Carsten comment at the interim:\r\n\r\n_\"How do we get from the textual syntax defined for a Media-Type to the CBOR \u201cany\u201d? Not sufficient to just point to a Media-Type registration, but rather have to define an explicit mapping to a CBOR type.\"_",
+      "createdAt": "2022-07-06T15:27:26Z",
+      "updatedAt": "2022-07-06T15:37:09Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "thomas-fossati",
+          "authorAssociation": "OWNER",
+          "body": "Christian comment at the interim:\r\n\r\n_\"One suggestion to consider (maybe even just as a mental exercise around the \u201cstring-typing\u201d issue): have one way of expressing full content types (maybe even with the @ for content-coding) on the one hand, and allow particular types to have their defined parameter structure (may be dict, may be just a single scalar as F) on the other hand. Then find whether having a (param, value) dict is the right middle ground.\"_",
+          "createdAt": "2022-07-06T15:37:09Z",
+          "updatedAt": "2022-07-06T15:37:09Z"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOHeY_585NP38e",
+      "title": "what about content coding?",
+      "url": "https://github.com/thomas-fossati/draft-coap-parametrized-cf/issues/5",
+      "state": "OPEN",
+      "author": "thomas-fossati",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Comment from Carsten at the interim:\r\n\r\n_\"CB: pCF depends on media type and content coding to be defined in C-F registry, pCF only allows changing parameters\"_",
+      "createdAt": "2022-07-06T15:29:03Z",
+      "updatedAt": "2022-07-06T15:29:03Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 6,
+      "id": "I_kwDOHeY_585NP7hf",
+      "title": "allow parameters to override parameters already encoded in C-F?",
+      "url": "https://github.com/thomas-fossati/draft-coap-parametrized-cf/issues/6",
+      "state": "OPEN",
+      "author": "thomas-fossati",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently we explicitly say \"no, parameters are only additive\"\r\n\r\nCarsten note:\r\n\r\n_\"CB: Could a parameter given in pCF override that defined for a Content-Format (e.g., CF=0 has one parameter [which one never wants to change, so that is a bad example])? (Parameter could be required!)\"_",
+      "createdAt": "2022-07-06T15:39:21Z",
+      "updatedAt": "2022-07-06T15:39:21Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 7,
+      "id": "I_kwDOHeY_585NP8Oy",
+      "title": "a different mAccept",
+      "url": "https://github.com/thomas-fossati/draft-coap-parametrized-cf/issues/7",
+      "state": "OPEN",
+      "author": "thomas-fossati",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Christian at the interim:\r\n\r\n_\"(A) multi-accept based on existing Accept option could be `[params, *(ct, params)]`\"_\r\n\r\nCarsten's expansion:\r\n\r\n_\"The Accept option would indicate a first Content-Format, while the additional parameters for it are in the first element of the array above within the pAccept option. The second element of that array in the pAccept option includes more Content-Format with possible additional parameters.\"_\r\n\r\n",
+      "createdAt": "2022-07-06T15:41:12Z",
+      "updatedAt": "2022-07-06T15:43:05Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 8,
+      "id": "I_kwDOHeY_585NP9hV",
+      "title": "do plain-old and p-variants mash up?",
+      "url": "https://github.com/thomas-fossati/draft-coap-parametrized-cf/issues/8",
+      "state": "OPEN",
+      "author": "thomas-fossati",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "a comment from Carsten at the interim:\r\n\r\n_\"CB: How do Accept and pAccept, CF and pCF combine? Worth thinking about it, although applicability might be limited.\"_",
+      "createdAt": "2022-07-06T15:44:45Z",
+      "updatedAt": "2022-07-06T15:44:45Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
+  "pulls": []
+}
