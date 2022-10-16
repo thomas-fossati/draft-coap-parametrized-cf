@@ -56,7 +56,7 @@ content coding into a single Content-Format number.  (For an example, see
 {{Section 16.10 of RFC8152}}.)  This number is carried in the Content-Format
 and Accept Options.
 
-This compression strategy is ideal in cases where the set of possible
+Such compression strategy is ideal in cases where the set of possible
 combinations is known upfront and has small cardinality.  However, it lacks the
 flexibility to deal smoothly with situations where the number of combinations
 can grow unbounded.
