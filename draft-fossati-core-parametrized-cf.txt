@@ -5,8 +5,8 @@
 Constrained RESTful Environments                              T. Fossati
 Internet-Draft                                                       arm
 Intended status: Standards Track                             H. Birkholz
-Expires: 12 December 2022                                 Fraunhofer SIT
-                                                            10 June 2022
+Expires: 19 April 2023                                    Fraunhofer SIT
+                                                         16 October 2022
 
 
                   Parametrized Content-Format for CoAP
@@ -36,6 +36,7 @@ About This Document
    Discussion of this document takes place on the Constrained RESTful
    Environments Working Group mailing list (mailto:core@ietf.org), which
    is archived at https://mailarchive.ietf.org/arch/browse/core/.
+   Subscribe at https://www.ietf.org/mailman/listinfo/core/.
 
    Source for this draft and an issue tracker can be found at
    https://github.com/thomas-fossati/draft-coap-parametrized-cf.
@@ -55,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 December 2022.
+   This Internet-Draft will expire on 19 April 2023.
 
 Copyright Notice
 
@@ -95,7 +96,7 @@ Table of Contents
    example, see Section 16.10 of [RFC8152].)  This number is carried in
    the Content-Format and Accept Options.
 
-   This compression strategy is ideal in cases where the set of possible
+   Such compression strategy is ideal in cases where the set of possible
    combinations is known upfront and has small cardinality.  However, it
    lacks the flexibility to deal smoothly with situations where the
    number of combinations can grow unbounded.
