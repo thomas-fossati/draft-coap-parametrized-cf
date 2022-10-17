@@ -139,8 +139,8 @@ Table of Contents
 
 3.  Parametrized Content-Format
 
-   The Parametrized Content-Format is a CBOR [STD94] data item defined
-   by the CDDL [RFC8610] in Figure 1.
+   The Parametrized Content-Format is a CBOR data item defined by the
+   CDDL in Figure 1.
 
    The first element in the tuple is the Content-Format identifier,
    followed by one or more name-value pairs representing the additional
