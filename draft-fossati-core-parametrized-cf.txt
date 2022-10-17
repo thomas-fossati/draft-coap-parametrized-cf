@@ -5,8 +5,8 @@
 Constrained RESTful Environments                              T. Fossati
 Internet-Draft                                                       arm
 Intended status: Standards Track                             H. Birkholz
-Expires: 19 April 2023                                    Fraunhofer SIT
-                                                         16 October 2022
+Expires: 20 April 2023                                    Fraunhofer SIT
+                                                         17 October 2022
 
 
                   Parametrized Content-Format for CoAP
@@ -56,7 +56,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 April 2023.
+   This Internet-Draft will expire on 20 April 2023.
 
 Copyright Notice
 
@@ -83,6 +83,7 @@ Table of Contents
    5.  Parametrized Multi-Valued Accept Option
    6.  Security Considerations
    7.  IANA Considerations
+     7.1.  CoAP Option Numbers Registry
    8.  References
      8.1.  Normative References
      8.2.  Informative References
@@ -93,17 +94,19 @@ Table of Contents
 
    CoAP squashes the combination of a media type, media type parameters
    and content coding into a single Content-Format number.  (For an
-   example, see Section 16.10 of [RFC8152].)  This number is carried in
-   the Content-Format and Accept Options.
+   example, see Table 2 in Section 2 of [STD96].)  This number is
+   carried in the Content-Format and Accept Options.
 
    Such compression strategy is ideal in cases where the set of possible
-   combinations is known upfront and has small cardinality.  However, it
-   lacks the flexibility to deal smoothly with situations where the
-   number of combinations can grow unbounded.
+   parameters combinations is known upfront and has small cardinality.
+   However, it lacks the flexibility to deal smoothly with situations
+   where the number of combinations can grow unbounded.
 
    An example is [I-D.lundblade-rats-eat-media-type], in which the
    "profile" media type parameter can carry a number of different values
    that are constantly minted through a loosely regulated process.
+   Another example is content negotiation of CoRAL [I-D.ietf-core-coral]
+   profiles.
 
    To avoid the combinatorial explosion that derives from such premises,
    this document defines the "parametrized" Content-Format data item
@@ -128,22 +131,24 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
+   In this document, the structure of data is specified in CDDL
+   [RFC8610] [RFC9165].
+
+   The examples in Section 3.2 use CBOR diagnostic notation defined in
+   Section 8 of [STD94] and Appendix G of [RFC8610].
+
 3.  Parametrized Content-Format
 
    The Parametrized Content-Format is a CBOR [STD94] data item defined
    by the CDDL [RFC8610] in Figure 1.
 
    The first element in the tuple is the Content-Format identifier,
-   followed by zero or more name-value pairs representing the additional
+   followed by one or more name-value pairs representing the additional
    media type parameters.
-
-   The name-value pairs are optional to support the case where the
-   Parametrized Content-Format is used in Parametrized Multi-Valued
-   Accept Option (Section 5).
 
    parametrized-content-format = [
      content-format,
-     * [ parameter-name, parameter-value ]
+     + [ parameter-name, parameter-value ]
    ]
 
    content-format = 0..65535
@@ -173,8 +178,8 @@ Table of Contents
              Figure 1: CDDL for the Parametrized Content-Format
 
 
-   // TODO describe use of numeric identifiers as alias for parameter
-   // names (requires a new registry).
+   // TODO describe use of numeric identifiers for parameter name
+   // aliasing (requires a new registry).
 
 3.1.  Requirements
 
@@ -200,7 +205,7 @@ Table of Contents
      [ "p2", 128 ]
    ]
 
-                            Figure 2: Example #1
+                Figure 2: Content-Format with two paramters
 
 4.  Parametrized Content-Format Option
 
@@ -236,13 +241,17 @@ Table of Contents
 
               Table 2: Parametrized Multi-Valued Accept Option
 
-   The Parametrized Multi-Valued Accept Option carries a single CBOR-
-   encoded Parametrized Content-Format data item or two or more
-   Parametrized Content-Format data items as a CBOR array.
+   The Parametrized Multi-Valued Accept Option carries either a single
+   CBOR-encoded pa-content-format data item or two or more pa-content-
+   format items wrapped in a CBOR array.  In turn, each pa-content-
+   format can be either a plain Content-Format or a Parametrized
+   Content-Format as described in Figure 4.
+
+   pa-content-format = content-format / parametrized-content-format
 
    one-or-more<T> = T / [ 2* T ]
 
-   pmva-option-fmt = bytes .cbor one-or-more<parametrized-content-format>
+   pmva-option-fmt = bytes .cbor one-or-more<pa-content-format>
 
           Figure 4: Parametrized Multi-Valued Accept Option Format
 
@@ -257,15 +266,49 @@ Table of Contents
 
 6.  Security Considerations
 
-   TODO Security
+   The security considerations in Section 11.1 of [RFC7252] related to
+   the parsing of protocol elements apply.
+
+   The security considerations in Section 11.3 of [RFC7252] related to
+   amplification risks apply.
+
+   TODO expand
 
 7.  IANA Considerations
 
-   TODO IANA
+
+   // RFC Editor: please replace RFCthis with this RFC number and remove
+   // this note.
+
+7.1.  CoAP Option Numbers Registry
+
+   IANA is requested to add the entries from Table 3 to the CoAP Option
+   Numbers sub-registry of the Constrained RESTful Environments (CoRE)
+   Parameters [IANA.core-parameters] registry:
+
+     +========+=========================================+============+
+     | Number | Name                                    | Reference  |
+     +========+=========================================+============+
+     | TBD13  | Parametrized Multi-Valued Accept Option | Section 5  |
+     |        |                                         | of RFCthis |
+     +--------+-----------------------------------------+------------+
+     | TBD24  | Parametrized Content-Format Option      | Section 4  |
+     |        |                                         | of RFCthis |
+     +--------+-----------------------------------------+------------+
+
+                            Table 3: New Options
+
+   This document suggests 13 (TBD13) and 24 (TBD24) as values to be
+   assigned for the new option numbers.
 
 8.  References
 
 8.1.  Normative References
+
+   [IANA.core-parameters]
+              IANA, "Constrained RESTful Environments (CoRE)
+              Parameters", 8 June 2012,
+              <https://www.iana.org/assignments/core-parameters>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -287,12 +330,24 @@ Table of Contents
               JSON Data Structures", RFC 8610, DOI 10.17487/RFC8610,
               June 2019, <https://www.rfc-editor.org/rfc/rfc8610>.
 
-   [STD94]    Bormann, C. and P. Hoffman, "Concise Binary Object
-              Representation (CBOR)", STD 94, RFC 8949, December 2020.
+   [RFC9165]  Bormann, C., "Additional Control Operators for the Concise
+              Data Definition Language (CDDL)", RFC 9165,
+              DOI 10.17487/RFC9165, December 2021,
+              <https://www.rfc-editor.org/rfc/rfc9165>.
 
-              <https://www.rfc-editor.org/info/std94>
+   [STD94]    Bormann, C. and P. Hoffman, "Concise Binary Object
+              Representation (CBOR)", STD 94, RFC 8949,
+              DOI 10.17487/RFC8949, December 2020,
+              <https://www.rfc-editor.org/rfc/rfc8949>.
 
 8.2.  Informative References
+
+   [I-D.ietf-core-coral]
+              Amsüss, C. and T. Fossati, "The Constrained RESTful
+              Application Language (CoRAL)", Work in Progress, Internet-
+              Draft, draft-ietf-core-coral-05, 7 March 2022,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-core-
+              coral-05>.
 
    [I-D.lundblade-rats-eat-media-type]
               Lundblade, L., Birkholz, H., and T. Fossati, "EAT Media
@@ -301,13 +356,15 @@ Table of Contents
               <https://datatracker.ietf.org/doc/html/draft-lundblade-
               rats-eat-media-type-00>.
 
-   [RFC8152]  Schaad, J., "CBOR Object Signing and Encryption (COSE)",
-              RFC 8152, DOI 10.17487/RFC8152, July 2017,
-              <https://www.rfc-editor.org/rfc/rfc8152>.
+   [STD96]    Schaad, J., "CBOR Object Signing and Encryption (COSE):
+              Structures and Process", STD 96, RFC 9052,
+              DOI 10.17487/RFC9052, August 2022,
+              <https://www.rfc-editor.org/rfc/rfc9052>.
 
 Acknowledgments
 
-   TODO acknowledge.
+   Thank you Carsten Bormann, Christian Amsüss, and Marco Tiloca for the
+   useful comments and suggestions.
 
 Authors' Addresses
 
