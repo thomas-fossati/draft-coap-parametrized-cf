@@ -1,13 +1,12 @@
 ---
+v: 3
+
 title: "Parametrized Content-Format for CoAP"
 category: std
 
 docname: draft-fossati-core-parametrized-cf-latest
 submissiontype: IETF
-number:
-date:
 consensus: true
-v: 3
 area: "Applications and Real-Time"
 workgroup: "Constrained RESTful Environments"
 keyword:
@@ -30,12 +29,23 @@ author:
     email: henk.birkholz@sit.fraunhofer.de
 
 normative:
-  RFC7252:
-  RFC8610:
+  RFC7252: coap
+  RFC8610: cddl
+  RFC9165: cddlplus
   STD94:
+    -: cbor
+    =: RFC8949
+  IANA.core-parameters: iana-core
 
 informative:
-  RFC8152:
+  STD96:
+    -: cose
+    =: RFC9052
+  I-D.ietf-core-coral: coral
+  I-D.lundblade-rats-eat-media-type: eat-mt
+
+entity:
+  SELF: "RFCthis"
 
 --- abstract
 
@@ -52,18 +62,19 @@ Accept and Content-Format Options.
 # Introduction
 
 CoAP squashes the combination of a media type, media type parameters and
-content coding into a single Content-Format number.  (For an example, see
-{{Section 16.10 of RFC8152}}.)  This number is carried in the Content-Format
-and Accept Options.
+content coding into a single Content-Format number.  (For an example, see Table
+2 in {{Section 2 of -cose}}.)  This number is carried in the Content-Format and
+Accept Options.
 
-Such compression strategy is ideal in cases where the set of possible
+Such compression strategy is ideal in cases where the set of possible parameters
 combinations is known upfront and has small cardinality.  However, it lacks the
 flexibility to deal smoothly with situations where the number of combinations
 can grow unbounded.
 
-An example is {{?I-D.lundblade-rats-eat-media-type}}, in which the "profile"
-media type parameter can carry a number of different values that are constantly
-minted through a loosely regulated process.
+An example is {{-eat-mt}}, in which the "profile" media type parameter can
+carry a number of different values that are constantly minted through a loosely
+regulated process.  Another example is content negotiation of CoRAL {{-coral}}
+profiles.
 
 To avoid the combinatorial explosion that derives from such premises, this
 document defines the "parametrized" Content-Format data item ({{sec-pcf}}) as a
@@ -83,22 +94,24 @@ request.
 
 {::boilerplate bcp14-tagged}
 
+In this document, the structure of data is specified in CDDL {{-cddl}}
+{{-cddlplus}}.
+
+The examples in {{sec-examples}} use CBOR diagnostic notation defined in
+{{Section 8 of -cbor}} and {{Appendix G of -cddl}}.
+
 # Parametrized Content-Format {#sec-pcf}
 
-The Parametrized Content-Format is a CBOR {{STD94}} data item defined by the
+The Parametrized Content-Format is a CBOR {{-cbor}} data item defined by the
 CDDL {{RFC8610}} in {{cddl-pcf}}.
 
 The first element in the tuple is the Content-Format identifier, followed by
-zero or more name-value pairs representing the additional media type parameters.
-
-The name-value pairs are optional to support the case where the Parametrized
-Content-Format is used in Parametrized Multi-Valued Accept Option
-({{sec-pma-option}}).
+one or more name-value pairs representing the additional media type parameters.
 
 ~~~cddl
 parametrized-content-format = [
   content-format,
-  * [ parameter-name, parameter-value ]
+  + [ parameter-name, parameter-value ]
 ]
 
 content-format = 0..65535
@@ -129,7 +142,8 @@ RFC6838-parameter-name = '
 
 [^TBD1]
 
-[^TBD1]: TODO describe use of numeric identifiers as alias for parameter names (requires a new registry).
+[^TBD1]: TODO describe use of numeric identifiers for parameter name aliasing
+         (requires a new registry).
 
 ## Requirements
 
@@ -145,7 +159,7 @@ Content-Format data item must satisfy:
 If any of the conditions listed above is not met, the entire data item is
 considered invalid and MUST NOT be processed further.
 
-## Examples
+## Examples {#sec-examples}
 
 ~~~cbor-diag
 [
@@ -154,7 +168,7 @@ considered invalid and MUST NOT be processed further.
   [ "p2", 128 ]
 ]
 ~~~
-{: #ex-pcf-1 title="Example #1" }
+{: #ex-pcf-1 title="Content-Format with two paramters" }
 
 # Parametrized Content-Format Option {#sec-pcf-option}
 
@@ -172,7 +186,7 @@ pcf-option-fmt = bytes .cbor parametrized-content-format
 {: #cddl-pcf-opt-fmt title="Parametrized Content-Format Option Format"}
 
 The semantic is identical to the Content-Format Option described in {{Section
-5.10.3 of RFC7252}}.
+5.10.3 of -coap}}.
 
 # Parametrized Multi-Valued Accept Option {#sec-pma-option}
 
@@ -181,36 +195,69 @@ The semantic is identical to the Content-Format Option described in {{Section
 | TBD13  | x |   |   |   | Parametrized Multi-Valued Accept Option | See {{cddl-pmva-opt-fmt}} | | none |
 {: #tbl-pmva-opt title="Parametrized Multi-Valued Accept Option"}
 
-The Parametrized Multi-Valued Accept Option carries a single CBOR-encoded
-Parametrized Content-Format data item or two or more Parametrized
-Content-Format data items as a CBOR array.
+The Parametrized Multi-Valued Accept Option carries either a single
+CBOR-encoded `pa-content-format` data item or two or more `pa-content-format`
+items wrapped in a CBOR array.  In turn, each `pa-content-format` can be either
+a plain Content-Format or a Parametrized Content-Format as described in
+{{cddl-pmva-opt-fmt}}.
 
 ~~~cddl
+pa-content-format = content-format / parametrized-content-format
+
 one-or-more<T> = T / [ 2* T ]
 
-pmva-option-fmt = bytes .cbor one-or-more<parametrized-content-format>
+pmva-option-fmt = bytes .cbor one-or-more<pa-content-format>
 ~~~
 {: #cddl-pmva-opt-fmt title="Parametrized Multi-Valued Accept Option Format"}
 
 The semantic is identical to the Accept Option described in {{Section 5.10.4 of
-RFC7252}}, except for the ability to list more than one acceptable
-(parametrized) Content-Format, which is key to enable finer-grained content
-negotiation.
+-coap}}, except for the ability to list more than one acceptable (parametrized)
+Content-Format, which is key to enable finer-grained content negotiation.
 
 The Content-Formats are listed in order of preference.  If more than one match
 is found, the entry with the lowest index in the array MUST be selected.
 
 # Security Considerations
 
-TODO Security
+The security considerations in {{Section 11.1 of -coap}} related to the parsing
+of protocol elements apply.
+
+The security considerations in {{Section 11.3 of -coap}} related to
+amplification risks apply.
+
+TODO expand
 
 # IANA Considerations
 
-TODO IANA
+[^to-be-removed]
+
+[^to-be-removed]: RFC Editor: please replace {{&SELF}} with this RFC number and
+                  remove this note.
+
+## CoAP Option Numbers Registry
+
+IANA is requested to add the entries from {{tbl-iana-req}} to the CoAP Option
+Numbers sub-registry of the Constrained RESTful Environments (CoRE) Parameters
+{{-iana-core}} registry:
+
+| Number | Name | Reference |
+| ------ | ---- | --------- |
+| TBD13  | Parametrized Multi-Valued Accept Option | {{sec-pma-option}} of {{&SELF}} |
+| TBD24  | Parametrized Content-Format Option | {{sec-pcf-option}} of {{&SELF}} |
+{: #tbl-iana-req title="New Options"}
+
+This document suggests 13 (TBD13) and 24 (TBD24) as values to be assigned for
+the new option numbers.
 
 --- back
 
 # Acknowledgments
 {:numbered="false"}
 
-TODO acknowledge.
+Thank you
+Carsten Bormann,
+{{{Christian Amsüss}}},
+and
+Marco Tiloca
+for the useful comments and suggestions.
+
