@@ -102,8 +102,8 @@ The examples in {{sec-examples}} use CBOR diagnostic notation defined in
 
 # Parametrized Content-Format {#sec-pcf}
 
-The Parametrized Content-Format is a CBOR {{-cbor}} data item defined by the
-CDDL {{RFC8610}} in {{cddl-pcf}}.
+The Parametrized Content-Format is a CBOR data item defined by the CDDL in
+{{cddl-pcf}}.
 
 The first element in the tuple is the Content-Format identifier, followed by
 one or more name-value pairs representing the additional media type parameters.
